@@ -35,7 +35,7 @@ def connectionLoop(sock):
             for c in clients:
                sock.sendto(bytes(m,'utf8'), (c[0],c[1]))
             
-            sock.sentto(bytes(m,'utf8'), ())
+            #sock.sentto(bytes(m,'utf8'), ())
 
 # Every second verifies if clients are still active or not based on their heartbeat
 def cleanClients():
