@@ -44,6 +44,9 @@ def connectionLoop(sock):
                player['color'] = clients[c]['color']
                Others['players'].append(player)
             oth=json.dumps(Others)
+            print('OTHERS messsage: ')
+            print(oth)
+            print('**************************************')
             sock.sendto(bytes(oth,'utf8'), (addr[0], addr[1]))
 
 # Every second verifies if clients are still active or not based on their heartbeat
