@@ -33,7 +33,7 @@ def connectionLoop(sock):
             message = {"cmd": 0,"players":[{"id":str(addr), "color": clients[addr]['color']}]}
             m = json.dumps(message)
             for c in clients:
-               if(c.key != addr)
+               if(c[0] != addr[0] and c[1] != addr[1])
                   sock.sendto(bytes(m,'utf8'), (c[0],c[1]))
             
             # Sends information of all connected clients to the newly connected client
@@ -44,7 +44,7 @@ def connectionLoop(sock):
                player['color'] = clients[c]['color']
                Others['players'].append(player)
             oth=json.dumps(Others)
-            sock.sentto(bytes(oth,'utf8'), (addr[0], addr[1]))
+            sock.sendto(bytes(oth,'utf8'), (addr[0], addr[1]))
 
 # Every second verifies if clients are still active or not based on their heartbeat
 def cleanClients(sock):
