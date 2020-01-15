@@ -33,7 +33,7 @@ def connectionLoop(sock):
             message = {"cmd": 0,"players":[{"id":str(addr), "color": clients[addr]['color']}]}
             m = json.dumps(message)
             for c in clients:
-               if(c != addr)
+               if(c.key != addr)
                   sock.sendto(bytes(m,'utf8'), (c[0],c[1]))
             
             # Sends information of all connected clients to the newly connected client
