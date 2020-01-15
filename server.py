@@ -28,24 +28,43 @@ def connectionLoop(sock):
             clients[addr] = {}
             clients[addr]['lastBeat'] = datetime.now()
             clients[addr]['color'] = {"R": random.random(), "G": random.random(), "B": random.random()}
-            # Let's start colorful
+
+            # Sends information of the new connected client to everyone - but the newly connected client
             message = {"cmd": 0,"players":[{"id":str(addr), "color": clients[addr]['color']}]}
             m = json.dumps(message)
-            # Sends information of the new connected client to everyone
             for c in clients:
-               sock.sendto(bytes(m,'utf8'), (c[0],c[1]))
+               if(c != addr)
+                  sock.sendto(bytes(m,'utf8'), (c[0],c[1]))
             
-            #sock.sentto(bytes(m,'utf8'), ())
+            # Sends information of all connected clients to the newly connected client
+            Others = {"cmd": 2, "players": []}
+            for c in clients:
+               player = {}
+               player['id'] = str(c)
+               player['color'] = clients[c]['color']
+               Others['players'].append(player)
+            oth=json.dumps(Others)
+            sock.sentto(bytes(oth,'utf8'), (addr[0], addr[1]))
 
 # Every second verifies if clients are still active or not based on their heartbeat
-def cleanClients():
+def cleanClients(sock):
    while True:
+      deleteMessage = {"cmd": 3,"players":[]}
       for c in list(clients.keys()):
          if (datetime.now() - clients[c]['lastBeat']).total_seconds() > 5:
             print('Dropped Client: ', c)
+            player = {}
+            player['id'] = str(c)
+            player['color'] = clients[c]['color']
+            deleteMessage['players'].append(player)
             clients_lock.acquire()
             del clients[c]
             clients_lock.release()
+
+      dm = json.dumps(deleteMessage)
+      for f in clients:
+         sock.sendto(bytes(dm,'utf8'), (f[0],f[1]))
+
       time.sleep(1)
 
 # Every second sends message about whoelse is still connected to the server
@@ -75,7 +94,7 @@ def main():
    s.bind(('', port))
    start_new_thread(gameLoop, (s,))
    start_new_thread(connectionLoop, (s,))
-   start_new_thread(cleanClients,())
+   start_new_thread(cleanClients,(s,))
    while True:
       time.sleep(1)
 
