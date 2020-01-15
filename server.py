@@ -33,12 +33,13 @@ def connectionLoop(sock):
             message = {"cmd": 0,"players":[{"id":str(addr), "color": clients[addr]['color']}]}
             m = json.dumps(message)
             for c in clients:
-               if c[0] != addr[0] and c[1] != addr[1]:
+               if c != addr :
                   print('NEW messsage: ')
                   print(m)
                   print('**************************************')
                   sock.sendto(bytes(m,'utf8'), (c[0],c[1]))
             
+            print("Now going to the other message")
             # Sends information of all connected clients to the newly connected client
             Others = {"cmd": 2, "players": []}
             for c in clients:
@@ -47,6 +48,9 @@ def connectionLoop(sock):
                player['color'] = clients[c]['color']
                Others['players'].append(player)
             oth=json.dumps(Others)
+            print('OTHERS messsage: ')
+            print(oth)
+            print('**************************************')
             sock.sendto(bytes(oth,'utf8'), (addr[0], addr[1]))
 
 # Every second verifies if clients are still active or not based on their heartbeat
@@ -76,7 +80,7 @@ def gameLoop(sock):
       # This sends the UPDATE (1) message to the client
       GameState = {"cmd": 1, "players": []}
       clients_lock.acquire()
-      print (clients)
+      #print (clients)
       for c in clients:
          player = {}
          #Change color
@@ -85,7 +89,7 @@ def gameLoop(sock):
          player['color'] = clients[c]['color']
          GameState['players'].append(player)
       s=json.dumps(GameState)
-      print(s)
+      #print(s)
       for c in clients:
          sock.sendto(bytes(s,'utf8'), (c[0],c[1]))
       clients_lock.release()
