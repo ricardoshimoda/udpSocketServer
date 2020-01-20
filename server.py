@@ -8,7 +8,7 @@ import json
 
 clients_lock = threading.Lock()
 connected = 0
-
+xStep = 1.5
 clients = {}
 
 # this is the receiving message loop 
@@ -21,6 +21,8 @@ def connectionLoop(sock):
          if 'heartbeat' in data:
             #updates heartbeat data to make sure client is still alive
             clients[addr]['lastBeat'] = datetime.now()
+         if 'position' in data
+            clients[addr]['position'] = 
       else:
          # new client - receives a connect
          if 'connect' in data:
@@ -28,9 +30,14 @@ def connectionLoop(sock):
             clients[addr] = {}
             clients[addr]['lastBeat'] = datetime.now()
             clients[addr]['color'] = {"R": random.random(), "G": random.random(), "B": random.random()}
-
+            # Calculate the position of the newly acquired member
+            finalCount = connected + 1
+            xCoord = ((int)finalCount/2) * xStep
+            if finalCount%2 == 1:
+               xCoord = -1 * xCoord
+            clients[addr]['position'] = {"x": xCoord,"y":0.0, "z":0.0}
             # Sends information of the new connected client to everyone - but the newly connected client
-            message = {"cmd": 0,"players":[{"id":str(addr), "color": clients[addr]['color']}]}
+            message = {"cmd": 0,"players":[{"id":str(addr), "color": clients[addr]['color'], "position": clients[addr]['position']}]}
             m = json.dumps(message)
             for c in clients:
                if c != addr :
@@ -46,6 +53,7 @@ def connectionLoop(sock):
                player = {}
                player['id'] = str(c)
                player['color'] = clients[c]['color']
+               player['position'] = clients[c]['position']
                Others['players'].append(player)
             oth=json.dumps(Others)
             print('OTHERS messsage: ')
@@ -84,9 +92,10 @@ def gameLoop(sock):
       for c in clients:
          player = {}
          #Change color
-         clients[c]['color'] = {"R": random.random(), "G": random.random(), "B": random.random()}
+         clients[c]['color'] = {"R": random.random(), "G": random.random(), "B": random.random()}         
          player['id'] = str(c)
          player['color'] = clients[c]['color']
+         player['position'] = clienrs[c]['position']
          GameState['players'].append(player)
       s=json.dumps(GameState)
       print(s)
