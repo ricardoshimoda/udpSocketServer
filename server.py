@@ -93,7 +93,7 @@ def gameLoop(sock):
       for c in clients:
          sock.sendto(bytes(s,'utf8'), (c[0],c[1]))
       clients_lock.release()
-      time.sleep(5)
+      time.sleep(1)
 
 def main():
    port = 12345
