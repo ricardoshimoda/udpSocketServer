@@ -26,9 +26,9 @@ def connectionLoop(sock):
             #updates heartbeat data to make sure client is still alive
             clients[addr]['lastBeat'] = datetime.now()
          if 'cube_position' in data:
-            print(data)
+            #print(data)
             positionMessage = data[2:-1]
-            print(positionMessage)
+            #print(positionMessage)
             positionData = json.JSONDecoder().decode(positionMessage)
             clients[addr]['position'] = positionData['position']
       else:
@@ -65,9 +65,6 @@ def connectionLoop(sock):
                player['position'] = clients[c]['position']
                Others['players'].append(player)
             oth=json.dumps(Others)
-            #print('OTHERS messsage: ')
-            #print(oth)
-            #print('**************************************')
             sock.sendto(bytes(oth,'utf8'), (addr[0], addr[1]))
             connected += 1
 
@@ -106,17 +103,20 @@ def gameLoop(sock):
       for c in clients:
          player = {}
          #Change color
-         clients[c]['color'] = {"R": random.random(), "G": random.random(), "B": random.random()}         
+         #clients[c]['color'] = {"R": random.random(), "G": random.random(), "B": random.random()}         
          player['id'] = str(c)
          player['color'] = clients[c]['color']
          player['position'] = clients[c]['position']
          GameState['players'].append(player)
       s=json.dumps(GameState)
-      print(s)
+      #print(s)
       for c in clients:
          sock.sendto(bytes(s,'utf8'), (c[0],c[1]))
       clients_lock.release()
-      time.sleep(1)
+      #time.sleep(1/3)
+      #time.sleep(1/10)
+      #time.sleep(1/30)
+      time.sleep(1/60)
 
 def main():
    port = 12345
