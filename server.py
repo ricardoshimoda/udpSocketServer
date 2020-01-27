@@ -37,6 +37,7 @@ def connectionLoop(sock):
             # Calculate the position of the newly acquired member
             finalCount = connected + 1
             xCoord = (finalCount//2) * xStep
+            print(xCoord)
             if (int(finalCount) % 2 == 1):
                xCoord = -1 * xCoord
             clients[addr]['position'] = {"x": xCoord,"y":0.0, "z":0.0}
@@ -64,6 +65,7 @@ def connectionLoop(sock):
             #print(oth)
             #print('**************************************')
             sock.sendto(bytes(oth,'utf8'), (addr[0], addr[1]))
+            connected += 1
 
 # Every second verifies if clients are still active or not based on their heartbeat
 def cleanClients(sock):
