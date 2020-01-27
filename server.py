@@ -41,7 +41,7 @@ def connectionLoop(sock):
             # Calculate the position of the newly acquired member
             finalCount = connected + 1
             xCoord = (finalCount//2) * xStep
-            print(xCoord)
+            #print(xCoord)
             if (int(finalCount) % 2 == 1):
                xCoord = -1 * xCoord
             clients[addr]['position'] = {"x": xCoord,"y":0.0, "z":0.0}
@@ -130,3 +130,4 @@ def main():
 
 if __name__ == '__main__':
    main()
+   
