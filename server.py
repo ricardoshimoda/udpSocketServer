@@ -9,10 +9,14 @@ import json
 clients_lock = threading.Lock()
 connected = 0
 xStep = 1.5
+
 clients = {}
+
 
 # this is the receiving message loop 
 def connectionLoop(sock):
+   global xStep
+   global connected
    while True:
       data, addr = sock.recvfrom(1024)
       data = str(data)
